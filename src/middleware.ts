@@ -86,5 +86,8 @@ export const config = {
     '/((?!.+\\.[\\w]+$|_next).*)',
     '/',
     '/(api|trpc)(.*)'
+  ],
+  unstable_allowDynamic: [
+    '/node_modules/@clerk/**'
   ]
 };

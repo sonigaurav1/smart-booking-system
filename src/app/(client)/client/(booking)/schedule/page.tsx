@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
-import type { Id } from "../../../../../../convex/_generated/dataModel";
+import type { Id } from "convex/_generated/dataModel";
 import { useToast } from "@/hooks/use-toast";
 
 interface Business {

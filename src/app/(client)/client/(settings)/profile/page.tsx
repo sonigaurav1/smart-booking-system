@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
-import type { Id } from "../../../../../../../../convex/_generated/dataModel";
+import type { Id } from "convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -102,8 +102,10 @@ export default function ClientProfilePage() {
         api.functions.queries.getBusinessForClerk.default,
         { clerkId: user!.id },
       );
-      setBusiness(updatedBusiness as Business);
-      setFormData(updatedBusiness);
+      if (updatedBusiness) {
+        setBusiness(updatedBusiness as Business);
+        setFormData(updatedBusiness);
+      }
     } catch (e) {
       console.error("Failed to update business:", e);
       toast({

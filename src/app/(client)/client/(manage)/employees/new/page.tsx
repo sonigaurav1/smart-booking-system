@@ -63,7 +63,7 @@ export default function NewEmployeePage() {
         if (editId) {
           const employee = await convex.query(
             api.functions.queries.getEmployeeById.default,
-            { employeeId: editId },
+            { employeeId: editId as any },
           );
           if (employee) {
             setName(employee.name ?? "");
@@ -114,8 +114,8 @@ export default function NewEmployeePage() {
       }
       if (editId) {
         await convex.mutation(api.functions.mutations.updateEmployee.default, {
-          employeeId: editId,
-          businessId,
+          employeeId: editId as any,
+          businessId: businessId as any,
           name: name.trim(),
           email: email.trim() || undefined,
           availableTimes: times,
@@ -123,7 +123,7 @@ export default function NewEmployeePage() {
         toast({ title: "Updated", description: "Employee updated." });
       } else {
         await convex.mutation(api.functions.mutations.createEmployee.default, {
-          businessId,
+          businessId: businessId as any,
           name: name.trim(),
           email: email.trim() || undefined,
           availableTimes: times,

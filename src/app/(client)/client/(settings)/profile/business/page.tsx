@@ -3,7 +3,7 @@
 import { useState } from "react";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
-import type { Id } from "../../../../../../convex/_generated/dataModel";
+import type { Id } from "convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import convex from "@/lib/convex-client";
 import ShopBookingWidget from "@/components/shop/shop-booking-widget";
-import type { Id } from "../../../../../convex/_generated/dataModel";
+import type { Id } from "convex/_generated/dataModel";
 import { api } from "convex/_generated/api";
 
 export default function ShopPublicPage() {

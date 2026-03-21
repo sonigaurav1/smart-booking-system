@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
-import type { Id } from "../../../convex/_generated/dataModel";
+import type { Id } from "convex/_generated/dataModel";
 import DateSelector from "@/components/booking/date-selector";
 import TimeSelector from "@/components/booking/time-selector";
 import { Button } from "@/components/ui/button";
@@ -80,8 +80,8 @@ export default function ShopBookingWidget({
           businessId,
           clientName: clientName.trim(),
           clientEmail: clientEmail.trim(),
-          employeeId,
-          serviceId,
+          employeeId: employeeId as any,
+          serviceId: serviceId as any,
           appointmentDate: date!.toISOString().slice(0, 10), // YYYY-MM-DD
           appointmentTime: time,
           notes: undefined,

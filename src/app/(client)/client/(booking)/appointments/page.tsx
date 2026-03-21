@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
-import type { Id } from "../../../../../../convex/_generated/dataModel";
+import type { Id } from "convex/_generated/dataModel";
 import { useToast } from "@/hooks/use-toast";
 
 interface Appointment {
