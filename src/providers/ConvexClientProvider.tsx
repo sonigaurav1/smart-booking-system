@@ -12,9 +12,17 @@ export default function ConvexClientProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const clerkProvider = (
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY as string}
+    >
+      {children}
+    </ClerkProvider>
+  );
+
   if (!convex) {
-    // During build time without NEXT_PUBLIC_CONVEX_URL, skip provider
-    return <>{children}</>;
+    // During build time without NEXT_PUBLIC_CONVEX_URL, skip Convex provider
+    return clerkProvider;
   }
 
   return (
