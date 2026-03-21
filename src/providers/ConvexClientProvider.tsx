@@ -5,6 +5,7 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ConvexReactClient } from "convex/react";
 
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
 
 export default function ConvexClientProvider({
@@ -12,23 +13,19 @@ export default function ConvexClientProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const clerkProvider = (
-    <ClerkProvider
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY as string}
-    >
-      {children}
-    </ClerkProvider>
-  );
-
-  if (!convex) {
-    // During build time without NEXT_PUBLIC_CONVEX_URL, skip Convex provider
-    return clerkProvider;
+  // During build time without required env vars, skip all providers
+  if (!convexUrl || !clerkKey) {
+    return <>{children}</>;
   }
 
+  if (!convex) {
+    // Has Clerk key but no Convex URL, just use Clerk
+    return <ClerkProvider publishableKey={clerkKey}>{children}</ClerkProvider>;
+  }
+
+  // Both Convex and Clerk URLs available
   return (
-    <ClerkProvider
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY as string}
-    >
+    <ClerkProvider publishableKey={clerkKey}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         {children}
       </ConvexProviderWithClerk>
