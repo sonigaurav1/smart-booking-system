@@ -1,21 +1,33 @@
 import { mutation } from "../../_generated/server";
+import { v } from "convex/values";
 
-export default mutation(async ({ db }, payload: any) => {
-    const existing = await db.get(payload.serviceId);
-    if (!existing) throw new Error("Service not found");
+export default mutation({
+    args: {
+        serviceId: v.id("services"),
+        businessId: v.optional(v.string()),
+        name: v.optional(v.string()),
+        duration: v.optional(v.number()),
+        price: v.optional(v.number()),
+        description: v.optional(v.string()),
+        category: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const existing = await ctx.db.get(args.serviceId);
+        if (!existing) throw new Error("Service not found");
 
-    // Optional: verify businessId matches (for services)
-    if (payload.businessId && 'businessId' in existing && String((existing as any).businessId) !== String(payload.businessId)) {
-        throw new Error("Mismatched businessId");
-    }
+        // Optional: verify businessId matches (for services)
+        if (args.businessId && 'businessId' in existing && String((existing as { businessId?: string }).businessId) !== String(args.businessId)) {
+            throw new Error("Mismatched businessId");
+        }
 
-    const patch: any = {};
-    if (payload.name !== undefined) patch.name = payload.name;
-    if (payload.duration !== undefined) patch.duration = payload.duration;
-    if (payload.price !== undefined) patch.price = payload.price;
-    if (payload.description !== undefined) patch.description = payload.description;
-    if (payload.category !== undefined) patch.category = payload.category;
+        const patch: Record<string, unknown> = {};
+        if (args.name !== undefined) patch.name = args.name;
+        if (args.duration !== undefined) patch.duration = args.duration;
+        if (args.price !== undefined) patch.price = args.price;
+        if (args.description !== undefined) patch.description = args.description;
+        if (args.category !== undefined) patch.category = args.category;
 
-    await db.patch(payload.serviceId, patch);
-    return true;
+        await ctx.db.patch(args.serviceId, patch);
+        return true;
+    },
 });

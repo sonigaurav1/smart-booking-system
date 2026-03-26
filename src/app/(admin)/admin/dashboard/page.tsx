@@ -16,7 +16,6 @@ import { useClerk } from "@clerk/clerk-react";
 import { BarChart3, Users, Calendar, TrendingUp } from "lucide-react";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
-import type { Id } from "convex/_generated/dataModel";
 import Link from "next/link";
 
 interface Stats {
@@ -62,13 +61,9 @@ export default function AdminDashboardPage() {
         ]);
 
         // For admin, we show high-level stats
-        const totalAppointments = businesses.reduce((sum: number, b: any) => {
-          return sum + (b.appointmentCount || 0);
-        }, 0);
-
         setStats({
           totalBusinesses: businesses?.length || 0,
-          totalAppointments: totalAppointments,
+          totalAppointments: 0, // Appointments data would need additional query
           totalUsers: users?.length || 0,
           activeAppointments: 0, // Could be calculated if we fetch more data
         });

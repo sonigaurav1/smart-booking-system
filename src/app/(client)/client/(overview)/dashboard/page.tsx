@@ -12,13 +12,6 @@ import RecentTransactions from "@/components/dashboard/recent-transactions";
 import BookingsChart from "@/components/dashboard/bookings-chart";
 import EmployeeSchedule from "@/components/dashboard/employee-schedule";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Calendar, CheckCircle2, AlertCircle, Users } from "lucide-react";
 
 interface Stats {
@@ -35,7 +28,7 @@ interface Stats {
 export default function DashboardPage() {
   const router = useRouter();
   const { user, isSignedIn } = useUser();
-  const [businessId, setBusinessId] = useState<string | null>(null);
+  const [, setBusinessId] = useState<string | null>(null);
   const [hasNoBusinessFound, setHasNoBusinessFound] = useState(false);
   const [stats, setStats] = useState<Stats>({
     totalAppointments: 0,
@@ -140,7 +133,7 @@ export default function DashboardPage() {
       <div className="p-6 space-y-4">
         <h2 className="text-2xl font-bold">No business found</h2>
         <p className="text-muted-foreground">
-          You haven't created a business yet. Create one to get started.
+          You haven&apos;t created a business yet. Create one to get started.
         </p>
         <Button onClick={() => router.push("/client/business")}>
           Create a Business

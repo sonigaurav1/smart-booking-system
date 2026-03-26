@@ -1,6 +1,6 @@
 export interface UserIdentity {
     role: string;
-    [key: string]: any;
+    [key: string]: string | number | boolean | null | undefined;
 }
 
 export interface AuthContext {

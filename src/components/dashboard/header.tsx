@@ -1,14 +1,15 @@
-"use client"
+"use client";
 
-import { Bell } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { UserButton, useUser } from "@clerk/nextjs"
+import { Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { UserButton, useUser } from "@clerk/nextjs";
 
 export default function DashboardHeader() {
-  const { user, isLoaded } = useUser()
+  const { isLoaded } = useUser();
 
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening"
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
 
   if (!isLoaded) {
     return (
@@ -17,7 +18,7 @@ export default function DashboardHeader() {
           <h2 className="text-2xl font-bold text-foreground">{greeting} 🌅</h2>
         </div>
       </header>
-    )
+    );
   }
 
   return (
@@ -40,5 +41,5 @@ export default function DashboardHeader() {
         />
       </div>
     </header>
-  )
+  );
 }
