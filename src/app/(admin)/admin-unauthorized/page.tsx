@@ -1,12 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useClerk } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 
 export const dynamic = "force-dynamic";
 
 export default function AdminUnauthorizedPage() {
-  const { signOut } = useClerk();
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-rose-900 via-rose-800 to-rose-700 p-6">
       <div className="w-full max-w-lg space-y-6 rounded-xl border border-rose-600/40 bg-rose-900/40 backdrop-blur-md p-8 text-rose-50 shadow-2xl shadow-black/40">
@@ -23,12 +21,11 @@ export default function AdminUnauthorizedPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={() => signOut({ redirectUrl: "/admin/sign-in" })}
-            className="inline-flex items-center justify-center rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/30"
-          >
-            Sign out and switch account
-          </button>
+          <SignOutButton redirectUrl="/admin/sign-in">
+            <button className="inline-flex items-center justify-center rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/30">
+              Sign out and switch account
+            </button>
+          </SignOutButton>
           <Link
             href="/"
             className="inline-flex items-center justify-center rounded-md bg-white/0 px-4 py-2 text-sm font-medium text-white/90 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
