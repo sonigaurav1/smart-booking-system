@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useToast } from "@/hooks/use-toast";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -29,6 +31,7 @@ interface Business {
 }
 
 export default function ClientProfilePage() {
+  const router = useRouter();
   const { user, isSignedIn } = useUser();
   const { toast } = useToast();
   const [business, setBusiness] = useState<Business | null>(null);
@@ -65,31 +68,28 @@ export default function ClientProfilePage() {
     })();
   }, [isSignedIn, user, toast]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleSave = async () => {
-    if (!business) return;
+    if (!business || !formData.name) {
+      toast({
+        title: "Validation Error",
+        description: "Business name is required",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setSaving(true);
     try {
       await convex.mutation(api.functions.mutations.updateBusiness.default, {
         businessId: business._id as Id<"businesses">,
-        name: formData.name || business.name,
-        description: formData.description,
-        category: formData.category,
-        address: formData.address,
-        phone: formData.phone,
-        openTime: formData.openTime,
-        closeTime: formData.closeTime,
-        logo: formData.logo,
+        name: formData.name,
+        description: formData.description || undefined,
+        category: formData.category || undefined,
+        address: formData.address || undefined,
+        phone: formData.phone || undefined,
+        openTime: formData.openTime || undefined,
+        closeTime: formData.closeTime || undefined,
+        logo: formData.logo || undefined,
       });
 
       toast({
@@ -129,111 +129,123 @@ export default function ClientProfilePage() {
 
   if (!business) {
     return (
-      <div className="p-6">
+      <div className="p-6 space-y-4">
+        <h2 className="text-2xl font-bold">No business found</h2>
         <p className="text-muted-foreground">
-          No business found. Please create one in settings.
+          Please create a business first in settings.
         </p>
+        <Button onClick={() => router.push("/client/settings/business")}>
+          Create Business
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-2xl">
-      <div>
-        <h1 className="text-3xl font-bold">Business Profile</h1>
-        <p className="text-muted-foreground">
-          Update your business details and branding
-        </p>
-      </div>
-
+    <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle>Business Information</CardTitle>
-          <CardDescription>Edit your business profile details</CardDescription>
+          <CardTitle>Business Profile</CardTitle>
+          <CardDescription>Update your business information</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div>
-            <label className="text-sm font-medium">Business Name</label>
+          <div className="grid gap-2">
+            <Label htmlFor="name">Business Name</Label>
             <Input
-              name="name"
+              id="name"
               value={formData.name || ""}
-              onChange={handleInputChange}
-              placeholder="Enter business name"
-              className="mt-2"
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              placeholder="Your Business Name"
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Description</label>
-            <textarea
-              name="description"
+          <div className="grid gap-2">
+            <Label htmlFor="description">Description</Label>
+            <Input
+              id="description"
               value={formData.description || ""}
-              onChange={handleInputChange}
-              placeholder="Enter business description"
-              className="mt-2 w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
-              rows={4}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              placeholder="Business description"
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Category</label>
+          <div className="grid gap-2">
+            <Label htmlFor="category">Category</Label>
             <Input
-              name="category"
+              id="category"
               value={formData.category || ""}
-              onChange={handleInputChange}
-              placeholder="e.g., Salon, Clinic, Gym"
-              className="mt-2"
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
+              placeholder="e.g., Salon, Restaurant, Clinic"
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Address</label>
+          <div className="grid gap-2">
+            <Label htmlFor="address">Address</Label>
             <Input
-              name="address"
+              id="address"
               value={formData.address || ""}
-              onChange={handleInputChange}
-              placeholder="Enter business address"
-              className="mt-2"
+              onChange={(e) =>
+                setFormData({ ...formData, address: e.target.value })
+              }
+              placeholder="123 Main Street"
             />
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Phone</label>
+          <div className="grid gap-2">
+            <Label htmlFor="phone">Phone</Label>
             <Input
-              name="phone"
+              id="phone"
               value={formData.phone || ""}
-              onChange={handleInputChange}
-              placeholder="Enter business phone number"
-              className="mt-2"
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
+              placeholder="(555) 123-4567"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium">Opening Time</label>
+            <div className="grid gap-2">
+              <Label htmlFor="openTime">Opening Time</Label>
               <Input
-                name="openTime"
+                id="openTime"
                 type="time"
-                value={formData.openTime || ""}
-                onChange={handleInputChange}
-                className="mt-2"
+                value={formData.openTime || "09:00"}
+                onChange={(e) =>
+                  setFormData({ ...formData, openTime: e.target.value })
+                }
               />
             </div>
-            <div>
-              <label className="text-sm font-medium">Closing Time</label>
+            <div className="grid gap-2">
+              <Label htmlFor="closeTime">Closing Time</Label>
               <Input
-                name="closeTime"
+                id="closeTime"
                 type="time"
-                value={formData.closeTime || ""}
-                onChange={handleInputChange}
-                className="mt-2"
+                value={formData.closeTime || "21:00"}
+                onChange={(e) =>
+                  setFormData({ ...formData, closeTime: e.target.value })
+                }
               />
             </div>
           </div>
 
-          <Button onClick={handleSave} disabled={saving} className="w-full">
-            {saving ? "Saving..." : "Save Changes"}
-          </Button>
+          <div className="flex gap-4 pt-4">
+            <Button onClick={handleSave} disabled={saving} className="flex-1">
+              {saving ? "Saving..." : "Save Changes"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => router.push("/client/dashboard")}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -52,8 +52,8 @@ function getDefaultItems(variant: SideNavbarProps["variant"]): NavItem[] {
           icon: NotebookPen,
           children: [
             {
-              label: "Appointments",
-              href: PATH.client.appointments,
+              label: "Bookings",
+              href: PATH.client.bookings,
               icon: NotebookPen,
             },
             { label: "Schedule", href: PATH.client.schedule, icon: Calendar },
@@ -102,8 +102,9 @@ function getDefaultItems(variant: SideNavbarProps["variant"]): NavItem[] {
     case "user":
       return [
         { label: "Dashboard", href: PATH.user.dashboard, icon: LayoutGrid },
+        { label: "My Bookings", href: PATH.user.bookings, icon: NotebookPen },
+        { label: "Browse Services", href: PATH.shopAll, icon: Globe },
         { label: "Profile", href: PATH.user.profile, icon: Users },
-        { label: "Book", href: PATH.book, icon: Calendar },
       ];
     default:
       return [];
@@ -163,7 +164,7 @@ function NavNode({
     !isLeaf &&
     item.children!.some(
       (c) =>
-        c.href && (pathname === c.href || pathname.startsWith(c.href + "/"))
+        c.href && (pathname === c.href || pathname.startsWith(c.href + "/")),
     );
   const [open, setOpen] = useState(anyChildActive);
 
@@ -178,7 +179,7 @@ function NavNode({
           "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
           isActive
             ? "bg-white/20 text-white"
-            : "text-white/80 hover:bg-white/10 hover:text-white"
+            : "text-white/80 hover:bg-white/10 hover:text-white",
         )}
       >
         <Icon className="w-5 h-5 shrink-0" />
@@ -198,7 +199,7 @@ function NavNode({
           "w-full flex items-center gap-3 px-3 py-2 rounded-md text-left transition-colors",
           anyChildActive
             ? "bg-white/10 text-white"
-            : "text-white/80 hover:bg-white/10 hover:text-white"
+            : "text-white/80 hover:bg-white/10 hover:text-white",
         )}
       >
         <Icon className="w-5 h-5 shrink-0" />

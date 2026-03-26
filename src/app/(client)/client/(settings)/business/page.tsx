@@ -1,16 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import convex from "@/lib/convex-client";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
-import { useUser } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 
 export default function BusinessProfilePage() {
+  const router = useRouter();
   const { isSignedIn, user } = useUser();
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -73,6 +82,9 @@ export default function BusinessProfilePage() {
 
       toast.success("Shop created successfully");
       console.log("Created business:", businessId);
+
+      // Redirect to dashboard
+      router.push("/client/dashboard");
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Failed";
       toast.error(message);
@@ -83,63 +95,70 @@ export default function BusinessProfilePage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6 max-w-2xl">
-      <h1 className="text-2xl font-bold">Business Profile</h1>
-      <div className="space-y-4">
-        <div className="grid gap-2">
-          <Label htmlFor="name">Business Name</Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Hello Saloon"
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="slug">Custom URL Slug</Label>
-          <Input
-            id="slug"
-            value={slug}
-            onChange={(e) =>
-              setSlug(e.target.value.replace(/\s+/g, "-").toLowerCase())
-            }
-            placeholder="hello-saloon"
-          />
-          <p className="text-xs text-muted-foreground">
-            Your public URL will be /shop/{slug || "your-slug"}
-          </p>
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="address">Address</Label>
-          <Input
-            id="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="123 Main St"
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="phone">Phone</Label>
-          <Input
-            id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="123-456-7890"
-          />
-        </div>
-      </div>
-      <div className="flex justify-center">
-        <Button
-          type="button"
-          className="cursor-pointer"
-          disabled={loading || !name.trim()}
-          onClick={() => {
-            console.log("Create business clicked");
-            handleCreate();
-          }} // Replace with handleCreate when ready
-        >
-          {loading ? "Saving..." : "Save"}
-        </Button>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Create Your Business</CardTitle>
+          <CardDescription>
+            Set up your business profile to start accepting bookings
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name">Business Name</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Hello Saloon"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="slug">Custom URL Slug</Label>
+            <Input
+              id="slug"
+              value={slug}
+              onChange={(e) =>
+                setSlug(e.target.value.replace(/\s+/g, "-").toLowerCase())
+              }
+              placeholder="hello-saloon"
+            />
+            <p className="text-xs text-muted-foreground">
+              Your public URL will be /shop/{slug || "your-slug"}
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="address">Address</Label>
+            <Input
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="123 Main St"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="123-456-7890"
+            />
+          </div>
+          <div className="flex justify-center">
+            <Button
+              type="button"
+              className="w-full cursor-pointer"
+              disabled={loading || !name.trim()}
+              onClick={() => {
+                console.log("Create business clicked");
+                handleCreate();
+              }}
+            >
+              {loading ? "Saving..." : "Create Business"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

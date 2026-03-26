@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export default mutation({
     args: {
         userId: v.id("users"),
-        role: v.union(v.literal("admin"), v.literal("client"), v.literal("user")),
+        role: v.union(v.literal("admin"), v.literal("client")),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();

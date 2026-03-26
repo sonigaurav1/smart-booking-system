@@ -13,8 +13,6 @@ export default mutation({
         notes: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
-
         // Validate employee exists and belongs to business
         const employee = await ctx.db.get(args.employeeId);
         if (!employee || employee.businessId !== args.businessId) {
@@ -40,16 +38,15 @@ export default mutation({
         const isConflict = conflicts.some(
             (a) =>
                 a.appointmentTime === args.appointmentTime &&
-                a.status !== "cancelled"
+                (a.status === "pending" || a.status === "confirmed")
         );
 
         if (isConflict) {
-            throw new Error("Slot not available");
+            throw new Error("Slot Not Available");
         }
 
         const appointmentId = await ctx.db.insert("appointments", {
             businessId: args.businessId,
-            clientId: identity ? identity.subject : undefined,
             clientName: args.clientName,
             clientEmail: args.clientEmail,
             employeeId: args.employeeId,

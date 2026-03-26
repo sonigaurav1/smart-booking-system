@@ -24,6 +24,7 @@ import type * as functions_mutations_updateService from "../functions/mutations/
 import type * as functions_mutations_updateUserRole from "../functions/mutations/updateUserRole.js";
 import type * as functions_mutations_updateUserRoleWithClerk from "../functions/mutations/updateUserRoleWithClerk.js";
 import type * as functions_queries_getAppointmentsByBusiness from "../functions/queries/getAppointmentsByBusiness.js";
+import type * as functions_queries_getAppointmentsByCustomerEmail from "../functions/queries/getAppointmentsByCustomerEmail.js";
 import type * as functions_queries_getAppointmentsForBusiness from "../functions/queries/getAppointmentsForBusiness.js";
 import type * as functions_queries_getBusinessById from "../functions/queries/getBusinessById.js";
 import type * as functions_queries_getBusinessBySlug from "../functions/queries/getBusinessBySlug.js";
@@ -63,6 +64,7 @@ declare const fullApi: ApiFromModules<{
   "functions/mutations/updateUserRole": typeof functions_mutations_updateUserRole;
   "functions/mutations/updateUserRoleWithClerk": typeof functions_mutations_updateUserRoleWithClerk;
   "functions/queries/getAppointmentsByBusiness": typeof functions_queries_getAppointmentsByBusiness;
+  "functions/queries/getAppointmentsByCustomerEmail": typeof functions_queries_getAppointmentsByCustomerEmail;
   "functions/queries/getAppointmentsForBusiness": typeof functions_queries_getAppointmentsForBusiness;
   "functions/queries/getBusinessById": typeof functions_queries_getBusinessById;
   "functions/queries/getBusinessBySlug": typeof functions_queries_getBusinessBySlug;

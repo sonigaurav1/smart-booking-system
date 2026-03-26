@@ -12,9 +12,6 @@ export default mutation({
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
-        if (!identity) throw new Error("Not authenticated");
-
         const business = await ctx.db.get(args.businessId);
         if (!business) throw new Error("Business not found");
 

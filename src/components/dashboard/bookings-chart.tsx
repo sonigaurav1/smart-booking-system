@@ -18,20 +18,46 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const data = [
-  { day: "Day 1", served: 65, bookings: 20 },
-  { day: "Day 2", served: 85, bookings: 15 },
-  { day: "Day 3", served: 60, bookings: 25 },
-  { day: "Day 4", served: 80, bookings: 18 },
-  { day: "Day 5", served: 70, bookings: 22 },
-  { day: "Day 6", served: 75, bookings: 20 },
-  { day: "Day 7", served: 78, bookings: 17 },
-  { day: "Day 8", served: 82, bookings: 16 },
-  { day: "Day 9", served: 72, bookings: 23 },
-  { day: "Day 10", served: 85, bookings: 15 },
-];
+interface Appointment {
+  appointmentDate: string;
+  status: "done" | "pending" | "cancelled" | "confirmed";
+  _id?: string;
+}
 
-export default function BookingsChart() {
+interface BookingsChartProps {
+  appointments?: Appointment[];
+}
+
+function generateLast10DaysData(appointments: Appointment[]) {
+  const data = [];
+  for (let i = 9; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split("T")[0];
+    const dayNum = i + 1;
+
+    const dayAppointments = appointments.filter(
+      (a) => a.appointmentDate === dateStr,
+    );
+    const served = dayAppointments.filter((a) => a.status === "done").length;
+    const bookings = dayAppointments.filter(
+      (a) => a.status === "pending",
+    ).length;
+
+    data.push({
+      day: `Day ${11 - dayNum}`,
+      served,
+      bookings,
+    });
+  }
+  return data;
+}
+
+export default function BookingsChart({
+  appointments = [],
+}: BookingsChartProps) {
+  const data = generateLast10DaysData(appointments);
+
   return (
     <Card>
       <CardHeader>
@@ -41,10 +67,7 @@ export default function BookingsChart() {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="var(--color-border)"
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
             <XAxis dataKey="day" />
             <YAxis />
             <Tooltip />

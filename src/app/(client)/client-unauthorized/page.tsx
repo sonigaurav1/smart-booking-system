@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useClerk } from "@clerk/nextjs";
 
+export const dynamic = "force-dynamic";
+
 export default function ClientUnauthorizedPage() {
   const { signOut } = useClerk();
 

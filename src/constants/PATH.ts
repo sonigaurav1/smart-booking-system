@@ -18,6 +18,7 @@ export const PATH = {
         root: "/user",
         dashboard: "/user/dashboard",
         profile: "/user/profile",
+        bookings: "/user/bookings",
     },
 
     // Client (shop owners / service providers)

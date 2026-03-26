@@ -26,7 +26,7 @@ type Appointment = {
   appointmentTime: string;
   clientName: string;
   clientEmail: string;
-  status: "pending" | "done" | "cancelled";
+  status: "pending" | "confirmed" | "done" | "cancelled";
   notes?: string;
   employeeId?: string;
   serviceId?: string;
@@ -45,6 +45,10 @@ export default function BookingsPage() {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [actionDialogOpen, setActionDialogOpen] = useState(false);
+  const [actionType, setActionType] = useState<"accept" | "complete" | null>(
+    null,
+  );
   const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
@@ -137,10 +141,51 @@ export default function BookingsPage() {
     }
   };
 
+  const handleAppointmentAction = async () => {
+    if (!selectedAppointment || !businessId || !actionType) return;
+
+    setCancelling(true);
+    try {
+      const newStatus = actionType === "accept" ? "confirmed" : "done";
+
+      await convex.mutation(
+        api.functions.mutations.updateAppointmentStatus.default,
+        {
+          appointmentId: selectedAppointment._id,
+          businessId: businessId as Id<"businesses">,
+          status: newStatus,
+        },
+      );
+
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a._id === selectedAppointment._id ? { ...a, status: newStatus } : a,
+        ),
+      );
+
+      toast.success(
+        actionType === "accept"
+          ? "Appointment confirmed"
+          : "Appointment marked as served",
+      );
+      setActionDialogOpen(false);
+      setSelectedAppointment(null);
+      setActionType(null);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to update appointment";
+      toast.error(message);
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "done":
         return "bg-green-100 text-green-800";
+      case "confirmed":
+        return "bg-blue-100 text-blue-800";
       case "pending":
         return "bg-yellow-100 text-yellow-800";
       case "cancelled":
@@ -241,18 +286,56 @@ export default function BookingsPage() {
                 )}
 
                 {appointment.status !== "cancelled" && (
-                  <div className="flex gap-2 justify-end pt-2">
+                  <div className="flex gap-2 justify-end pt-2 flex-wrap">
                     {appointment.status === "pending" && (
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          setSelectedAppointment(appointment);
-                          setCancelDialogOpen(true);
-                        }}
-                      >
-                        Cancel Appointment
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => {
+                            setSelectedAppointment(appointment);
+                            setActionType("accept");
+                            setActionDialogOpen(true);
+                          }}
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            setSelectedAppointment(appointment);
+                            setCancelDialogOpen(true);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    )}
+                    {appointment.status === "confirmed" && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => {
+                            setSelectedAppointment(appointment);
+                            setActionType("complete");
+                            setActionDialogOpen(true);
+                          }}
+                        >
+                          Mark as Served
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            setSelectedAppointment(appointment);
+                            setCancelDialogOpen(true);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </>
                     )}
                   </div>
                 )}
@@ -281,6 +364,39 @@ export default function BookingsPage() {
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {cancelling ? "Cancelling..." : "Cancel Appointment"}
+          </AlertDialogAction>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={actionDialogOpen} onOpenChange={setActionDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {actionType === "accept"
+                ? "Confirm Appointment"
+                : "Mark as Served"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {actionType === "accept"
+                ? `Confirm this appointment for ${selectedAppointment?.clientName} on ${selectedAppointment?.appointmentDate} at ${selectedAppointment?.appointmentTime}?`
+                : `Mark this appointment as served for ${selectedAppointment?.clientName}? This will complete the booking and free up the time slot.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleAppointmentAction}
+            disabled={cancelling}
+            className={
+              actionType === "accept" ? "" : "bg-green-600 hover:bg-green-700"
+            }
+          >
+            {cancelling
+              ? actionType === "accept"
+                ? "Accepting..."
+                : "Completing..."
+              : actionType === "accept"
+                ? "Accept Appointment"
+                : "Mark as Complete"}
           </AlertDialogAction>
         </AlertDialogContent>
       </AlertDialog>

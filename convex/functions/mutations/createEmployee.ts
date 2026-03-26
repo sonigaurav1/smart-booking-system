@@ -10,11 +10,7 @@ export default mutation({
         photo: v.optional(v.string()),
         availableTimes: v.optional(v.array(v.string())),
     },
-    handler: async ({ db, auth }, args) => {
-        const identity = await auth.getUserIdentity();
-        console.log("Identity:", identity);
-        if (!identity) throw new Error("Not authenticated");
-
+    handler: async ({ db }, args) => {
         const business = await db.get(args.businessId);
         if (!business) throw new Error("Business not found");
 

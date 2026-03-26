@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Calendar, Clock, Users, CheckCircle2 } from "lucide-react";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { PATH } from "@/constants/PATH";
 
 export default async function LandingPage() {
   const { userId } = await auth();
@@ -50,9 +52,11 @@ export default async function LandingPage() {
                 Start Free Trial
               </Button>
             </SignUpButton>
-            <Button size="lg" variant="outline">
-              Watch Demo
-            </Button>
+            <Link href={PATH.shopAll}>
+              <Button size="lg" variant="outline">
+                Browse Services
+              </Button>
+            </Link>
           </div>
         </div>
 

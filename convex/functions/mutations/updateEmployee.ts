@@ -9,10 +9,7 @@ export default mutation({
         email: v.optional(v.string()),
         availableTimes: v.optional(v.array(v.string())),
     },
-    handler: async ({ db, auth }, args) => {
-        const identity = await auth.getUserIdentity();
-        if (!identity) throw new Error("Not authenticated");
-
+    handler: async ({ db }, args) => {
         const existing = await db.get(args.employeeId);
         if (!existing) throw new Error("Employee not found");
 

@@ -9,8 +9,7 @@ export default defineSchema({
     name: v.string(),
     role: v.union(
       v.literal("admin"),
-      v.literal("client"),
-      v.literal("user")
+      v.literal("client")
     ),
     createdAt: v.number(),
   })
@@ -20,16 +19,15 @@ export default defineSchema({
   // BUSINESS / SHOP PROFILE
   businesses: defineTable({
     ownerId: v.id("users"),
-    // human-friendly unique URL id, e.g. "hello-saloon"
     slug: v.string(),
     name: v.string(),
     description: v.optional(v.string()),
-    category: v.optional(v.string()), // salon, doctor, repair, etc
+    category: v.optional(v.string()),
     address: v.optional(v.string()),
     phone: v.optional(v.string()),
     logo: v.optional(v.string()),
-    openTime: v.string(), // "09:00"
-    closeTime: v.string(), // "21:00"
+    openTime: v.string(),
+    closeTime: v.string(),
     createdAt: v.number(),
   })
     .index("by_ownerId", ["ownerId"])
@@ -78,8 +76,9 @@ export default defineSchema({
     appointmentDate: v.string(),
     appointmentTime: v.string(),
     status: v.union(
-      v.literal("done"),
       v.literal("pending"),
+      v.literal("confirmed"),
+      v.literal("done"),
       v.literal("cancelled")
     ),
     notes: v.optional(v.string()),

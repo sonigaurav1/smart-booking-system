@@ -14,25 +14,9 @@ export default mutation({
         logo: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
-        if (!identity) {
-            throw new Error("Not authenticated");
-        }
-
         const business = await ctx.db.get(args.businessId);
         if (!business) {
             throw new Error("Business not found");
-        }
-
-        // Check if the user owns this business
-
-        const user = await ctx.db
-            .query("users")
-            .filter((q) => q.eq(q.field("clerkId"), identity.subject))
-            .first();
-
-        if (!user || user._id !== business.ownerId) {
-            throw new Error("Unauthorized: You do not own this business");
         }
 
         const updateData: Record<string, unknown> = {

@@ -28,8 +28,12 @@ export default query({
         // Count unique customers
         const uniqueCustomers = new Set(appointments.map(a => a.clientId || a.clientEmail)).size;
 
-        // Get today's appointments
-        const today = new Date().toISOString().split('T')[0];
+        // Get today's appointments (using local date to match stored format)
+        const todayDate = new Date();
+        const year = todayDate.getFullYear();
+        const month = String(todayDate.getMonth() + 1).padStart(2, '0');
+        const day = String(todayDate.getDate()).padStart(2, '0');
+        const today = `${year}-${month}-${day}`;
         const todayAppointments = appointments.filter(a => a.appointmentDate === today);
 
         return {

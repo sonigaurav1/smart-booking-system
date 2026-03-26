@@ -1,9 +1,6 @@
 import { mutation } from "../../_generated/server";
 
-export default mutation(async ({ db, auth }, payload: any) => {
-    const identity = await auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
+export default mutation(async ({ db }, payload: any) => {
     const existing = await db.get(payload.serviceId);
     if (!existing) throw new Error("Service not found");
 

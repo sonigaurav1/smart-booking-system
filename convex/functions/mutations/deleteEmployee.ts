@@ -6,10 +6,7 @@ export default mutation({
         employeeId: v.id("employees"),
         businessId: v.optional(v.id("businesses")),
     },
-    handler: async ({ db, auth }, args) => {
-        const identity = await auth.getUserIdentity();
-        if (!identity) throw new Error("Not authenticated");
-
+    handler: async ({ db }, args) => {
         const existing = await db.get(args.employeeId);
         if (!existing) throw new Error("Employee not found");
 
