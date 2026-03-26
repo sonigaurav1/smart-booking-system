@@ -13,19 +13,19 @@ export default function ConvexClientProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // During build time without required env vars, skip all providers
-  if (!convexUrl || !clerkKey) {
-    return <>{children}</>;
+  // ClerkProvider is always needed, use a fallback key during build if missing
+  const publishableKey = clerkKey || "pk_test_build_placeholder";
+
+  // If Convex is not available, just use Clerk
+  if (!convexUrl || !convex) {
+    return (
+      <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
+    );
   }
 
-  if (!convex) {
-    // Has Clerk key but no Convex URL, just use Clerk
-    return <ClerkProvider publishableKey={clerkKey}>{children}</ClerkProvider>;
-  }
-
-  // Both Convex and Clerk URLs available
+  // Both Convex and Clerk are available
   return (
-    <ClerkProvider publishableKey={clerkKey}>
+    <ClerkProvider publishableKey={publishableKey}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         {children}
       </ConvexProviderWithClerk>
