@@ -16,6 +16,7 @@ import {
   NotebookPen,
 } from "lucide-react";
 import { PATH } from "@/constants/PATH";
+import Image from "next/image";
 
 export type NavItem = {
   label: string;
@@ -127,7 +128,7 @@ export default function SideNavbar({
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-            <Logo className="w-6 h-6" />
+            <Image src="/logo.png" alt="BookHub Logo" className="mix-blend-multiply" width={40} height={40} />
           </div>
           <h1 className="text-xl font-bold">{title}</h1>
         </div>

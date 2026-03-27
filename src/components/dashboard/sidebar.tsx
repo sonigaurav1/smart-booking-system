@@ -11,6 +11,7 @@ import {
   Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
@@ -30,7 +31,7 @@ export default function DashboardSidebar() {
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-            <Calendar className="w-6 h-6" />
+            <Image src="/logo.png" alt="BookHub Logo" width={40} height={40} />
           </div>
           <h1 className="text-xl font-bold">BookHub</h1>
         </div>
